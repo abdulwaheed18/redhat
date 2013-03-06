@@ -1,0 +1,54 @@
+#!/bin/sh
+
+RPM_SOURCE_DIR="/usr/src/redhat/SOURCES"
+RPM_BUILD_DIR="/usr/src/redhat/BUILD"
+RPM_OPT_FLAGS="-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m64 -mtune=generic"
+RPM_ARCH="x86_64"
+RPM_OS="linux"
+export RPM_SOURCE_DIR RPM_BUILD_DIR RPM_OPT_FLAGS RPM_ARCH RPM_OS
+RPM_DOC_DIR="/usr/share/doc"
+export RPM_DOC_DIR
+RPM_PACKAGE_NAME="mfe-cloudsso-sl-installer"
+RPM_PACKAGE_VERSION="1.0.0"
+RPM_PACKAGE_RELEASE="1"
+export RPM_PACKAGE_NAME RPM_PACKAGE_VERSION RPM_PACKAGE_RELEASE
+RPM_BUILD_ROOT="/usr/src/redhat/tmp/installer"
+export RPM_BUILD_ROOT
+
+PKG_CONFIG_PATH="/usr/lib64/pkgconfig:/usr/share/pkgconfig"
+export PKG_CONFIG_PATH
+
+set -x
+umask 022
+cd /usr/src/redhat/BUILD
+
+cd mfe-cloudsso-sl-installer
+LANG=C
+export LANG
+unset DISPLAY
+
+
+#remove if exist 
+rm -rf $RPM_BUILD_ROOT
+
+mkdir -p $RPM_BUILD_ROOT/mfe-cloudsso-sl-installer/apache-tomcat-7.0.34
+
+# copying file for installation
+cp -r apache-tomcat-7.0.34/. $RPM_BUILD_ROOT//usr/local/mfe-cloudsso-sl-installer/apache-tomcat-7.0.34
+cp deploy.sh $RPM_BUILD_ROOT//usr/local/mfe-cloudsso-sl-installer
+cp mxlcloudsso.war $RPM_BUILD_ROOT//usr/local/mfe-cloudsso-sl-installer/apache-tomcat-7.0.34/webapps/
+
+
+
+    
+   /usr/lib/rpm/find-debuginfo.sh /usr/src/redhat/BUILD/mfe-cloudsso-sl-installer
+
+    
+    
+    /usr/lib/rpm/redhat/brp-compress 
+     
+    /usr/lib/rpm/redhat/brp-strip-static-archive /usr/bin/strip 
+    /usr/lib/rpm/redhat/brp-strip-comment-note /usr/bin/strip /usr/bin/objdump 
+    /usr/lib/rpm/brp-python-bytecompile 
+    /usr/lib/rpm/redhat/brp-java-repack-jars 
+
